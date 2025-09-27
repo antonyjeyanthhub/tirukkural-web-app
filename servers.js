@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 app.use(express.static('public'));
 
 // Your JSON file URL - replace with your actual Azure URL
-const TIRUKKURAL_JSON_URL = 'YOUR_AZURE_JSON_FILE_URL_HERE';
+const TIRUKKURAL_JSON_URL = 'https://sttirukkuralmvp.blob.core.windows.net/tirukkural/tirukkural.json';
 
 // API endpoint to fetch Tirukkural data
 app.get('/api/tirukkural', async (req, res) => {
