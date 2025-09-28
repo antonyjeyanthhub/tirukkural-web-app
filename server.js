@@ -28,10 +28,16 @@ app.get('/api/tirukkural', async (req, res) => {
     const response = await axios.get(TIRUKKURAL_JSON_URL);
     const data = response.data;
     
+    // If data is a string, parse it as JSON
+    if (typeof data === 'string') {
+      data = JSON.parse(data);
+    }
+    
     // Debug logging
-    console.log('Data received:', JSON.stringify(data).substring(0, 500));
-    console.log('Is array:', Array.isArray(data));
-    console.log('Length/count:', Array.isArray(data) ? data.length : Object.keys(data).length);
+    console.log('Data type:', typeof data);
+    console.log('Is array after parsing:', Array.isArray(data));
+    console.log('First item:', data[0] ? JSON.stringify(data[0]).substring(0, 200) : 'No first item');
+    console.log('Array length:', Array.isArray(data) ? data.length : 'Not an array');
     
     // Send the data back to frontend
     res.json({
