@@ -28,6 +28,11 @@ app.get('/api/tirukkural', async (req, res) => {
     const response = await axios.get(TIRUKKURAL_JSON_URL);
     const data = response.data;
     
+    // Debug logging
+    console.log('Data received:', JSON.stringify(data).substring(0, 500));
+    console.log('Is array:', Array.isArray(data));
+    console.log('Length/count:', Array.isArray(data) ? data.length : Object.keys(data).length);
+    
     // Send the data back to frontend
     res.json({
       success: true,
