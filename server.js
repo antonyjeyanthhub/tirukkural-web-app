@@ -28,29 +28,29 @@ app.get('/api/tirukkural', async (req, res) => {
     const response = await axios.get(TIRUKKURAL_JSON_URL);
     let data = response.data;
     
-    console.log('Response status:', response.status);
+    /* console.log('Response status:', response.status);
     console.log('Content type:', response.headers['content-type']);
     console.log('Data type received:', typeof data);
-    console.log('Data length:', typeof data === 'string' ? data.length : 'Not a string');
+    console.log('Data length:', typeof data === 'string' ? data.length : 'Not a string'); */
     
     // If data is a string, parse it as JSON
     if (typeof data === 'string') {
-      console.log('First 200 chars:', data.substring(0, 200));
-      console.log('Last 200 chars:', data.substring(data.length - 200));
+      //console.log('First 200 chars:', data.substring(0, 200));
+      //console.log('Last 200 chars:', data.substring(data.length - 200));
       
       try {
         data = JSON.parse(data);
-        console.log('JSON parsing successful');
+        //console.log('JSON parsing successful');
       } catch (parseError) {
-        console.log('JSON parse error:', parseError.message);
-        console.log('Data ends with:', data.substring(data.length - 50));
+        //console.log('JSON parse error:', parseError.message);
+        //console.log('Data ends with:', data.substring(data.length - 50));
         throw new Error('Invalid JSON data received');
       }
     }
     
-    console.log('Final data type:', typeof data);
-    console.log('Is array:', Array.isArray(data));
-    console.log('Array length:', Array.isArray(data) ? data.length : 'Not an array');
+    //console.log('Final data type:', typeof data);
+    //console.log('Is array:', Array.isArray(data));
+    //console.log('Array length:', Array.isArray(data) ? data.length : 'Not an array');
     
     // Send the data back to frontend
     res.json({
