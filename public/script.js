@@ -4,6 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const status = document.getElementById('status');
     const content = document.getElementById('content');
     
+    // Pagination variables
+    let allKurals = [];
+    let currentPage = 1;
+    const kuralsPerPage = 10;
+    
     // Load button click handler
     loadBtn.addEventListener('click', loadTirukkural);
     
@@ -22,9 +27,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(result.message || 'Failed to load data');
             }
             
-            // Display the data
-            displayTirukkural(result.data, result.count);
-            showStatus(`Successfully loaded ${result.count} couplets!`, 'success');
+            // Store all kurals for pagination
+            allKurals = result.data;
+            currentPage = 1;
+            
+            // Display the first page
+            displayCurrentPage();
+            showStatus(`Successfully loaded ${result.count} kurals!`, 'success');
             
         } catch (error) {
             console.error('Error loading Tirukkural:', error);
@@ -43,31 +52,118 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    function displayTirukkural(data, count) {
-        let html = `<div class="data-header">
-            <h2>திருக்குறள் - Tirukkural</h2>
-            <p class="data-count">Total Kurals: ${count}</p>
-        </div>`;
+    function displayCurrentPage() {
+        const totalPages = Math.ceil(allKurals.length / kuralsPerPage);
+        const startIndex = (currentPage - 1) * kuralsPerPage;
+        const endIndex = startIndex + kuralsPerPage;
+        const currentKurals = allKurals.slice(startIndex, endIndex);
         
-        // Your data is already an array of couplets
-        const couplets = Array.isArray(data) ? data : [data];
+        let html = `
+            <div class="data-header">
+                <h2>திருக்குறள் - Tirukkural</h2>
+                <p class="data-count">Total Kurals: ${allKurals.length}</p>
+                <p class="page-info">Page ${currentPage} of ${totalPages} (Showing kurals ${startIndex + 1}-${Math.min(endIndex, allKurals.length)})</p>
+            </div>
+        `;
         
-        // Display first 10 couplets for MVP (easier to read)
-        const displayCount = Math.min(couplets.length, 10);
-        
-        for (let i = 0; i < displayCount; i++) {
-            const couplet = couplets[i];
-            html += formatCouplet(couplet, i + 1);
+        // Display kurals for current page
+        for (let i = 0; i < currentKurals.length; i++) {
+            const kural = currentKurals[i];
+            html += formatCouplet(kural, startIndex + i + 1);
         }
         
-        if (couplets.length > 10) {
-            html += `<div class="load-more">
-                <p>Showing first 10 of ${couplets.length} kurals</p>
-                <small>பின்னர் மேலும் குறள்கள் காட்டப்படும்!</small>
-            </div>`;
-        }
+        // Add pagination controls
+        html += createPaginationControls(totalPages);
         
         content.innerHTML = html;
+        
+        // Add event listeners for pagination buttons
+        addPaginationEventListeners(totalPages);
+        
+        // Scroll to top when changing pages
+        content.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    function createPaginationControls(totalPages) {
+        if (totalPages <= 1) return '';
+        
+        let html = `<div class="pagination-container">`;
+        
+        // Previous button
+        html += `<button class="pagination-btn" id="prevBtn" ${currentPage <= 1 ? 'disabled' : ''}>
+            ← Previous
+        </button>`;
+        
+        // Page numbers (show current page and nearby pages)
+        const maxVisible = 5;
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+        
+        if (endPage - startPage < maxVisible - 1) {
+            startPage = Math.max(1, endPage - maxVisible + 1);
+        }
+        
+        if (startPage > 1) {
+            html += `<button class="pagination-btn page-num" data-page="1">1</button>`;
+            if (startPage > 2) {
+                html += `<span class="pagination-dots">...</span>`;
+            }
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            html += `<button class="pagination-btn page-num ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+        
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                html += `<span class="pagination-dots">...</span>`;
+            }
+            html += `<button class="pagination-btn page-num" data-page="${totalPages}">${totalPages}</button>`;
+        }
+        
+        // Next button
+        html += `<button class="pagination-btn" id="nextBtn" ${currentPage >= totalPages ? 'disabled' : ''}>
+            Next →
+        </button>`;
+        
+        html += `</div>`;
+        return html;
+    }
+    
+    function addPaginationEventListeners(totalPages) {
+        // Previous button
+        const prevBtn = document.getElementById('prevBtn');
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayCurrentPage();
+                }
+            });
+        }
+        
+        // Next button
+        const nextBtn = document.getElementById('nextBtn');
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayCurrentPage();
+                }
+            });
+        }
+        
+        // Page number buttons
+        const pageNumBtns = document.querySelectorAll('.page-num');
+        pageNumBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const page = parseInt(btn.dataset.page);
+                if (page !== currentPage) {
+                    currentPage = page;
+                    displayCurrentPage();
+                }
+            });
+        });
     }
     
     function formatCouplet(couplet, index) {
