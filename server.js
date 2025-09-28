@@ -1,5 +1,6 @@
 const express = require('express');
-const fetch = require('node-fetch');
+//const fetch = require('node-fetch');
+const axios = require('axios');
 const path = require('path');
 
 const app = express();
@@ -16,13 +17,16 @@ app.get('/api/tirukkural', async (req, res) => {
   try {
     console.log('Fetching Tirukkural data from:', TIRUKKURAL_JSON_URL);
     
-    const response = await fetch(TIRUKKURAL_JSON_URL);
+    /* const response = await fetch(TIRUKKURAL_JSON_URL);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    const data = await response.json();
+    const data = await response.json(); */
+
+    const response = await axios.get(TIRUKKURAL_JSON_URL);
+    const data = response.data;
     
     // Send the data back to frontend
     res.json({
