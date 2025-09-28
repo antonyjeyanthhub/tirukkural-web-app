@@ -122,6 +122,13 @@ main {
 .data-count {
     color: #6c757d;
     font-size: 0.95rem;
+    margin-bottom: 5px;
+}
+
+.page-info {
+    color: #007bff;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
 .load-more {
@@ -131,6 +138,58 @@ main {
     background-color: #f8f9fa;
     border-radius: 6px;
     color: #6c757d;
+}
+
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 40px;
+    padding: 20px;
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    color: #007bff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    min-width: 40px;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: #e9ecef;
+    border-color: #007bff;
+}
+
+.pagination-btn:disabled {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+    border-color: #dee2e6;
+}
+
+.pagination-btn.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination-btn.active:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.pagination-dots {
+    color: #6c757d;
+    padding: 0 4px;
+    font-weight: bold;
 }
 
 .placeholder {
@@ -224,5 +283,20 @@ footer {
     
     .content-area {
         padding: 20px;
+    }
+    
+    .pagination-container {
+        gap: 4px;
+        margin-top: 30px;
+    }
+    
+    .pagination-btn {
+        padding: 6px 8px;
+        font-size: 0.8rem;
+        min-width: 35px;
+    }
+    
+    .pagination-dots {
+        padding: 0 2px;
     }
 }
